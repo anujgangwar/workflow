@@ -54,6 +54,7 @@ module Workflow
           workflow_without_scopes(&specification)
           states = workflow_spec.states.values
           count = 1
+          byebug
           File.open("WorkflowState.rb","w+") do |f|
             f.write("class WorkflowState\n")
             states.each do |state|
