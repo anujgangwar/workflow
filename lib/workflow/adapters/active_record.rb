@@ -53,15 +53,25 @@ module Workflow
         def workflow_with_scopes(&specification)
           workflow_without_scopes(&specification)
           states = workflow_spec.states.values
+          count = 1
+          File.open("WorkflowState.rb","w+") do |f|
+            f.write("class WorkflowState\n")
+            states.each do |state|
+              define_singleton_method("with_#{state}_state") do
+                where("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
+              end
 
-          states.each do |state|
-            define_singleton_method("with_#{state}_state") do
-              where("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
+              define_singleton_method("without_#{state}_state") do
+                where.not("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
+              end
+              f.write("  ")
+              f.write(state)
+              f.write(" = ")
+              f.write(count)
+              f.write("\n")
+              ++count
             end
-
-            define_singleton_method("without_#{state}_state") do
-              where.not("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
-            end
+            f.write("end")
           end
         end
 
