@@ -55,6 +55,7 @@ module Workflow
           states = workflow_spec.states.values
           generate_enum_file(states)
           states.each do |state|
+            byebug
             define_singleton_method("with_#{state}_state") do
               where("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
             end
