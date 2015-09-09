@@ -57,14 +57,7 @@ module Workflow
           File.open("WorkflowState.rb","w+") do |f|
             f.write("class WorkflowState\n")
             states.each do |state|
-              define_singleton_method("with_#{state}_state") do
-                where("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
-              end
-
-              define_singleton_method("without_#{state}_state") do
-                where.not("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
-              end
-              f.write("  ")
+               f.write("  ")
               f.write(state)
               f.write(" = ")
               f.write(count)
@@ -72,6 +65,15 @@ module Workflow
               ++count
             end
             f.write("end")
+          end
+          states.each do |state|
+            define_singleton_method("with_#{state}_state") do
+              where("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
+            end
+
+            define_singleton_method("without_#{state}_state") do
+              where.not("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
+            end
           end
         end
 
