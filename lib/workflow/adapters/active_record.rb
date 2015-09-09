@@ -57,13 +57,12 @@ module Workflow
           File.open("WorkflowState.rb","w+") do |f|
             f.write("class WorkflowState\n")
             states.each do |state|
-              byebug
                f.write("  ")
               f.write(state)
               f.write(" = ")
               f.write(count)
               f.write("\n")
-              ++count
+              count = count + 1
             end
             f.write("end")
           end
