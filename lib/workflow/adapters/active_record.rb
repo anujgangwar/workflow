@@ -65,7 +65,7 @@ module Workflow
           end
         end
 
-        end generate_enum_file(states)
+        def generate_enum_file(states)
           count = 1
           File.open("WorkflowState.rb","w+") do |f|
             f.write("class WorkflowState\n")
@@ -80,7 +80,7 @@ module Workflow
             f.write("end")
           end
         end
-        
+
       end
     end
   end
