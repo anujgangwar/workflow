@@ -53,6 +53,19 @@ module Workflow
         def workflow_with_scopes(&specification)
           workflow_without_scopes(&specification)
           states = workflow_spec.states.values
+          generate_enum_file(states)
+          states.each do |state|
+            define_singleton_method("with_#{state}_state") do
+              where("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
+            end
+
+            define_singleton_method("without_#{state}_state") do
+              where.not("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
+            end
+          end
+        end
+
+        end generate_enum_file(states)
           count = 1
           File.open("WorkflowState.rb","w+") do |f|
             f.write("class WorkflowState\n")
@@ -66,17 +79,8 @@ module Workflow
             end
             f.write("end")
           end
-          states.each do |state|
-            define_singleton_method("with_#{state}_state") do
-              where("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
-            end
-
-            define_singleton_method("without_#{state}_state") do
-              where.not("#{table_name}.#{self.workflow_column.to_sym} = ?", state.to_s)
-            end
-          end
         end
-
+        
       end
     end
   end
