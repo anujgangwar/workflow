@@ -9,6 +9,7 @@ module Workflow
 
       module InstanceMethods
         def load_workflow_state
+          byebug
           read_attribute(self.class.workflow_column)
         end
 
@@ -52,9 +53,9 @@ module Workflow
 
         def workflow_with_scopes(&specification)
           workflow_without_scopes(&specification)
-          states = workflow_spec.states.values
-          generate_enum_file(states)
-          states.each do |state|
+          @states = workflow_spec.states.values
+          generate_enum_file(@states)
+          @states.each do |state|
             count = 1
             define_singleton_method("with_#{state}_state") do
               where("#{table_name}.#{self.workflow_column.to_sym} = ?", count)
